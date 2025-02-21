@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music to Book Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='home.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Music2Books</h1>
+            <p>Discover Books Based on Your Music Taste</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="{{ url_for('login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('login_page') }}">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h2>Find Your Next Read Through Your Music</h2>
+            <p>Enter your favorite songs or playlists, and we'll recommend books based on your taste.</p>
+            <a href="/playlist-import" class="cta-button">Get Started</a>
+        </section>
+
+        <section class="features">
+            <h3>How It Works</h3>
+            <div class="feature">
+                <h4>1. Upload Your Playlist</h4>
+                <p>Connect with Spotify, Apple Music, or YouTube and share your playlists.</p>
+            </div>
+            <div class="feature">
+                <h4>2. Analyze Song Lyrics and Mood</h4>
+                <p>We'll analyze the mood, genre, and themes of your songs.</p>
+            </div>
+            <div class="feature">
+                <h4>3. Get Book Recommendations</h4>
+                <p>Receive personalized book recommendations that match the vibe of your music.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 Music2Books | All Rights Reserved</p>
+        </footer>
+    </main>
+</body>
+</html>

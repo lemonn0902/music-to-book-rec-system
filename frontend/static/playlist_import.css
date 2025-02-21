@@ -1,0 +1,217 @@
+/* frontend/static/css/playlist_import.css */
+:root {
+    --primary-color: #6366f1;
+    --primary-dark: #4f46e5;
+    --light-gray: #f3f4f6;
+    --border-color: #e5e7eb;
+    --text-color: #374151;
+    --error-bg: #fee2e2;
+    --error-text: #b91c1c;
+    --success-bg: #d1fae5;
+    --success-text: #047857;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: #f9fafb;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 24px;
+  }
+  
+  /* Tab Navigation */
+  .tab-navigation {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+  }
+  
+  .tab-btn {
+    padding: 10px 16px;
+    margin-right: 8px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+  }
+  
+  .tab-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+  }
+  
+  /* Forms */
+  .import-form {
+    margin-bottom: 20px;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+  
+  .hint-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+  }
+  
+  /* Song input section */
+  .song-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .song-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    flex-grow: 1;
+  }
+  
+  .remove-song-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  
+  .remove-song-btn:hover {
+    color: #b91c1c;
+  }
+  
+  /* Buttons */
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .submit-btn:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .add-btn {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--primary-color);
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  
+  .add-btn span {
+    margin-right: 4px;
+  }
+  
+  .add-btn:hover {
+    color: var(--primary-dark);
+  }
+  
+  /* Message box */
+  .message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 16px;
+  }
+  
+  .error {
+    background-color: var(--error-bg);
+    color: var(--error-text);
+  }
+  
+  .success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+  }
+
+  header {
+    background-color: #2a2a2a;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+header .logo h1 {
+    font-size: 2em;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1em;
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Music2Books</h1>
+            <p>Discover Books Based on Your Music Taste</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="{{ url_for('login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('login_page') }}">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="form-container">
+        <h2 id="form-title">Login</h2>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="form-content">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="registerForm" class="form-content" style="display: none;">
+            <label for="email">Email</label>
+            <input type="text" id="email-register" name="email" required>
+
+            <label for="username">Username</label>
+            <input type="text" id="username-register" name="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password-register" name="password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p id="toggle-link">
+            Don't have an account? <a href="javascript:void(0)" id="toggle-to-register">Register here</a>
+        </p>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>

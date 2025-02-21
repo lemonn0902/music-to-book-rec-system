@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Songs - Book Soundtrack Matcher</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Music2Books</h1>
+            <p>Discover Books Based on Your Music Taste</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="{{ url_for('login_page') }}">Login</a></li>
+                <li><a href="{{ url_for('login_page') }}">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h2 class="page-title">Enter Songs </h2>
+        
+        <div id="manual-form" class="import-form">
+            <form id="manual-import-form">
+                <div class="form-group">
+                    <label>Add Songs </label>
+                    
+                    <div id="songs-container">
+                        <div class="song-input">
+                            <div class="song-fields">
+                                <input type="text" placeholder="Song title" class="song-title" required>
+                                <input type="text" placeholder="Artist" class="song-artist" required>
+                                
+                            </div>
+                            <button type="button" class="remove-song-btn">✕</button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="add-song-btn" class="add-btn">
+                        <span>+</span> Add Another Song
+                    </button>
+                </div>
+                
+                <button type="submit" id="manual-submit-btn" class="submit-btn">
+                    Add to Database
+                </button>
+            </form>
+        </div>
+        
+        <div id="message-box" class="message hidden"></div>
+    </div>
+
+    <script src="{{ url_for('static', path='playlist_import.js') }}"></script>
+</body>
+</html>
