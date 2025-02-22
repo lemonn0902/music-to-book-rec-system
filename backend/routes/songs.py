@@ -5,8 +5,12 @@ from ..models import SongMetadata
 from fastapi.templating import Jinja2Templates
 from bson.errors import InvalidId
 import os
+import logging
 
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 from ..db import playlists_collection
 from .playlist import get_track_metadata
@@ -30,38 +34,99 @@ class Song(BaseModel):
     title: str
     artist: str
 
+class SongInput(BaseModel):
+    title: str
+    artist: str
+
+class SongResponse(BaseModel):
+    message: str
+    count: int
+    songs: List[dict]
+
+
 @router.post("/")
 async def add_songs(songs: List[dict]):
     try:
+        # Validate input
+        if not songs:
+            raise HTTPException(status_code=400, detail="No songs provided")
+            
+        logger.info(f"Received request to add {len(songs)} songs")
         added_songs = []
+        
         for song in songs:
-            # Fetch metadata from Last.fm
-            metadata = get_track_metadata(song["artist"], song["title"])
+            try:
+                # Validate song structure
+                if not isinstance(song, dict) or 'title' not in song or 'artist' not in song:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail="Invalid song format. Each song must have 'title' and 'artist'"
+                    )
+                
+                logger.info(f"Fetching metadata for: {song['title']} by {song['artist']}")
+                
+                # Fetch metadata from Last.fm with error handling
+                try:
+                    metadata = get_track_metadata(song["artist"], song["title"])
+                except Exception as e:
+                    logger.error(f"Last.fm API error for {song['title']}: {str(e)}")
+                    raise HTTPException(
+                        status_code=500, 
+                        detail=f"Error fetching Last.fm data: {str(e)}"
+                    )
+                
+                # Prepare song document
+                song_doc = {
+                    "name": metadata.name,
+                    "artist": metadata.artist,
+                    "album": metadata.album,
+                    "listeners": metadata.listeners,
+                    "playcount": metadata.playcount,
+                    "tags": metadata.tags,
+                    "url": metadata.url,
+                    "created_at": datetime.now()
+                }
+                
+                # Insert into MongoDB with error handling
+                try:
+                    result = playlists_collection.insert_one(song_doc)
+                    song_doc["_id"] = str(result.inserted_id)
+                    added_songs.append(song_doc)
+                    logger.info(f"Successfully added song: {song['title']}")
+                except Exception as e:
+                    logger.error(f"MongoDB error: {str(e)}")
+                    raise HTTPException(
+                        status_code=500, 
+                        detail=f"Database error: {str(e)}"
+                    )
+                    
+            except HTTPException:
+                raise
+            except Exception as e:
+                logger.error(f"Error processing song {song.get('title', 'unknown')}: {str(e)}")
+                continue
+        
+        if not added_songs:
+            raise HTTPException(
+                status_code=500, 
+                detail="Failed to add any songs"
+            )
             
-            # Prepare song document
-            song_doc = {
-                "name": metadata.name,
-                "artist": metadata.artist,
-                "album": metadata.album,
-                "listeners": metadata.listeners,
-                "playcount": metadata.playcount,
-                "tags": metadata.tags,
-                "url": metadata.url,
-                "created_at": datetime.now()
-            }
-            
-            # Insert into MongoDB
-            result = playlists_collection.insert_one(song_doc)
-            song_doc["_id"] = str(result.inserted_id)  # Convert ObjectId to string
-            added_songs.append(song_doc)
-
         return {
             "message": "Song(s) added successfully!",
             "count": len(added_songs),
-            "songs": added_songs  # Ensure _id is included
+            "songs": added_songs
         }
+        
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Unexpected error in add_songs: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Unexpected error: {str(e)}"
+        )
+
 
 @router.get("/")
 async def get_all_songs():
