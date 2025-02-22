@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='book_recommendations.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Music & Book Recommendations</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/playlist_import.html">Import Playlist</a></li>
+                <li><a href="/login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="song-details-container">
+            <h2>Song Details</h2>
+            <div id="song-details">
+                <!-- Song details will be loaded here -->
+                <p>Loading song details...</p>
+            </div>
+        </section>
+
+        <section class="recommendations-container">
+            <h2>Book Recommendations</h2>
+            <div id="recommendations-loading" class="hidden">
+                <div class="loader"></div>
+                <p>Finding the perfect books for you...</p>
+            </div>
+            <div id="recommendations-error" class="hidden">
+                <p>Sorry, we couldn't find recommendations. Please try again.</p>
+            </div>
+            <div id="no-recommendations">
+                <p>Click the button below to get book recommendations based on this song's genres.</p>
+                <button id="get-recommendations-btn" class="primary-btn">Get Book Recommendations</button>
+            </div>
+            <div id="recommendations-results" class="hidden">
+                <div id="genre-mapping">
+                    <!-- Genre mapping info will be shown here -->
+                </div>
+                <div id="books-grid">
+                    <!-- Book recommendations will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Music-Book Recommendation App</p>
+    </footer>
+
+    <script src="{{ url_for('static', path='book_recommendations.js') }}"></script>
+</body>
+</html>

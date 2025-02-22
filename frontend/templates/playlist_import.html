@@ -51,6 +51,12 @@
         </div>
         
         <div id="message-box" class="message hidden"></div>
+        <div id="added-songs" class="songs-list">
+            <h3>Added Songs</h3>
+            <div id="songs-list-container">
+                <!-- Songs will be dynamically added here by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', path='playlist_import.js') }}"></script>

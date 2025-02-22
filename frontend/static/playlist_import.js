@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const songsContainer = document.getElementById("songs-container");
     const messageBox = document.getElementById("message-box");
 
+    // Create a container for added songs
+    const addedSongsContainer = document.createElement("div");
+    addedSongsContainer.id = "added-songs";
+    addedSongsContainer.className = "songs-list";
+    addedSongsContainer.innerHTML = '<h3>Added Songs</h3><div id="songs-list-container"></div>';
+    manualForm.parentNode.insertBefore(addedSongsContainer, manualForm.nextSibling);
+
     // Add new song input fields dynamically
     addSongBtn.addEventListener("click", () => {
         const songDiv = document.createElement("div");
@@ -38,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Fetch song metadata from your FastAPI backend
     async function fetchMetadata(title, artist, songDiv) {
         try {
-            // Call the FastAPI backend endpoint to fetch metadata
             const response = await fetch(`/lastfm/track_metadata/?artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(title)}`);
             if (!response.ok) {
                 throw new Error("Failed to fetch metadata");
@@ -48,6 +54,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data) {
                 showMessage("Metadata fetched successfully!", "success");
                 console.log("Metadata:", data);
+
+                // Remove existing metadata if any
+                const existingMetadata = songDiv.querySelector('.metadata-fields');
+                if (existingMetadata) {
+                    existingMetadata.remove();
+                }
 
                 // Update the UI with the fetched metadata
                 const metadataFields = `
@@ -70,48 +82,90 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Handle form submission
-manualForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    manualForm.querySelector("form").addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    // Collect all songs from the form
-    const songs = [];
-    document.querySelectorAll(".song-input").forEach((songDiv) => {
-        const title = songDiv.querySelector(".song-title").value.trim();
-        const artist = songDiv.querySelector(".song-artist").value.trim();
-        if (title && artist) {
-            songs.push({ title, artist });
-        }
-    });
-
-    // Validate that at least one song is added
-    if (songs.length === 0) {
-        showMessage("Please add at least one song.", "error");
-        return;
-    }
-
-    // Log the payload for debugging
-    console.log("Sending payload:", songs);
-
-    // Submit the songs to the backend
-    try {
-        const response = await fetch("/songs/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(songs),  // Send the array directly
+        // Collect all songs from the form
+        const songs = [];
+        document.querySelectorAll(".song-input").forEach((songDiv) => {
+            const title = songDiv.querySelector(".song-title").value.trim();
+            const artist = songDiv.querySelector(".song-artist").value.trim();
+            if (title && artist) {
+                songs.push({ title, artist });
+            }
         });
 
-        if (!response.ok) {
-            throw new Error("Failed to submit songs");
+        // Validate that at least one song is added
+        if (songs.length === 0) {
+            showMessage("Please add at least one song.", "error");
+            return;
         }
 
-        const result = await response.json();
-        showMessage("Songs added successfully!", "success");
-        console.log("Submission result:", result);
-    } catch (error) {
-        console.error("Error submitting songs:", error);
-        showMessage("Failed to add songs. Please try again later.", "error");
-    }
-});
+        console.log("Sending payload:", songs); // Debug log
+
+        try {
+            const response = await fetch("/songs/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(songs),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to submit songs");
+            }
+
+            const result = await response.json();
+            console.log("API Response:", result); // Debug log
+
+            showMessage("Songs added successfully!", "success");
+            
+            // Clear the form
+            songsContainer.innerHTML = `
+                <div class="song-input">
+                    <div class="song-fields">
+                        <input type="text" placeholder="Song title" class="song-title" required>
+                        <input type="text" placeholder="Artist" class="song-artist" required>
+                        <button type="button" class="fetch-metadata-btn">🔍 Fetch Metadata</button>
+                    </div>
+                    <button type="button" class="remove-song-btn">✕</button>
+                </div>
+            `;
+
+            // Add the songs to the display list
+            const songsListContainer = document.getElementById("songs-list-container");
+            
+            // Handle the response
+            if (result.songs && Array.isArray(result.songs)) {
+                result.songs.forEach(song => {
+                    console.log("Song Object:", song); // Debug log
+                    if (!song._id) {
+                        console.error("Song ID is missing:", song);
+                        return;
+                    }
+                    const songElement = document.createElement("div");
+                    songElement.className = "song-item";
+                    songElement.innerHTML = `
+                        <div class="song-info">
+                            <span class="song-title">${song.name || ''}</span> by 
+                            <span class="song-artist">${song.artist || ''}</span>
+                        </div>
+                        <a href="/songs/view/${song._id}" class="btn recommendation-btn">
+                            Get Book Recommendations
+                        </a>
+                    `;
+                    songsListContainer.appendChild(songElement);
+                });
+            } else {
+                console.error("Invalid response format:", result);
+                showMessage("Failed to add songs. Invalid response from server.", "error");
+            }
+
+        } catch (error) {
+            console.error("Error submitting songs:", error);
+            console.error("Full error details:", error.message);
+            showMessage("Failed to add songs. Please try again later.", "error");
+        }
+    });
 
     // Show message
     function showMessage(message, type) {

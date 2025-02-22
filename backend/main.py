@@ -6,6 +6,7 @@ from pathlib import Path
 from backend.routes.auth import router as auth_router
 from backend.routes.playlist import lastfm_router
 from backend.routes.songs import router as songs_router
+from backend.routes.book_recommendations import book_recommendations_router
 
 # Initialize FastAPI app
 app = FastAPI()
@@ -54,4 +55,6 @@ def book_recommendations_page(request: Request):
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 app.include_router(lastfm_router, prefix="/lastfm", tags=["LastFM"])
 app.include_router(songs_router, prefix="/songs", tags=["Songs"])
+app.include_router(book_recommendations_router, prefix="/api/books", tags=["Book Recommendations"])
+
 
