@@ -13,6 +13,11 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 import certifi
+import logging 
+from backend.db import get_database, client
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 load_dotenv()  # Load environment variables from .env file
 
@@ -65,10 +70,31 @@ def book_recommendations_page(request: Request):
 @app.get("/test-db")
 async def test_db():
     try:
-        client.server_info()  # Checks if MongoDB is connected
-        return {"status": "Connected to MongoDB"}
+        # Test the connection
+        client.admin.command('ping')
+        return {"status": "Connected to MongoDB", "message": "Database connection is healthy"}
     except Exception as e:
-        return {"error": str(e)}
+        logger.error(f"Database connection error: {e}")
+        raise HTTPException(status_code=500, detail=f"Database connection failed: {str(e)}")
+
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        client.admin.command('ping')
+        logger.info("Connected to MongoDB at startup")
+    except Exception as e:
+        logger.error(f"Failed to connect to MongoDB at startup: {e}")
+        raise
+
+# Shutdown event to close database connection
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    try:
+        client.close()
+        logger.info("Closed MongoDB connection")
+    except Exception as e:
+        logger.error(f"Error closing MongoDB connection: {e}")
+
 
 
 # Include routers
